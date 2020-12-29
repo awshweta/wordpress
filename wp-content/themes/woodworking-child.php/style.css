@@ -1,0 +1,21 @@
+/*
+ Theme Name:   woodworking Child
+ Theme URI:    http://wordpress/wp-content/themes/woodworking-child/
+ Description:  woodworking Theme
+ Author:       Shweta Awasthi
+ Author URI:   http://example.com
+ Template:     woodworking
+ Version:      5.7
+ License:      GNU General Public License v2 or later
+ License URI:  http://www.gnu.org/licenses/gpl-2.0.html
+ Tags:         light, dark, two-columns, right-sidebar, responsive-layout, accessibility-ready
+ Text Domain:  woodworkingchild
+*/
+
+#logo a {
+    color:palegoldenrod;
+}
+
+.entry-title  a {
+    color: yellowgreen;
+}
