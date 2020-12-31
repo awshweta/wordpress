@@ -2,13 +2,16 @@
     function getstyle() 
     {
         wp_enqueue_style( 'style', get_stylesheet_uri() );
+    
     }
     add_action( 'wp_enqueue_scripts', 'getstyle' );
 
+
+
     function wpb_custom_new_menu() {
         register_nav_menu('my-custom-menu',__( 'My Custom Menu' ));
-      }
-      add_action( 'init', 'wpb_custom_new_menu' );
+    }
+    add_action( 'init', 'wpb_custom_new_menu' );
 
       function register_my_menus() {
         register_nav_menus(
@@ -111,7 +114,6 @@
             'before_title'  => '<h3 class="widget-title">',
             'after_title'   => '</h3>',
         ) );
-     
     }
 
     add_action( 'widgets_init', 'themename_widgets_init' );
