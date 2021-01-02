@@ -1,6 +1,9 @@
 <?php 
 get_header();
 get_sidebar(); ?>
+<?php $id=get_the_ID()?>
+                <?php $value = get_post_meta($id, 'customcolors', 1 );?>
+                <h1>color:<?php echo $value ?></h1>
 <div class="post">
     <h2 class="title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
     <p class="meta">Posted by <a href="#"><?php the_author(); ?></a> on <?php 

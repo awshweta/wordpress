@@ -33,6 +33,39 @@ function ced_more_link() {
 }
 add_filter( 'the_content_more_link', 'ced_more_link' );
 
+// Custom meta box (2-1-2021)
+function wporg_custom_cedbox( $post ) {
+    ?>
+    <label for="wporg_field">Custom meta Box</label>
+    <input type="text" name="color" id="color">
+    <?php
+}
+
+function wporg_add_ced_metabox() {
+    $screens = [ 'post' ];
+    foreach ( $screens as $screen ) {
+        add_meta_box(
+            'wporg_metabox_id',              // Unique ID
+            'Meta Box Title',      // Box title
+            'wporg_custom_cedbox',  // Content callback, must be of type callable
+            $screen                           // Post type
+        );
+    }
+}
+
+function save( int $post_id ) {
+    if ( array_key_exists( 'color', $_POST ) ) {
+        update_post_meta(
+            $post_id,
+            'colors',
+            $_POST['color']
+        );
+    }
+}
+
+add_action( 'add_meta_boxes', 'wporg_add_ced_metabox' );
+add_action( 'save_post', 'save' );
+
  //create table (30-12-2020)
 function ced_createTable() {
     global $wpdb;
@@ -68,9 +101,6 @@ function ced_createTable() {
 
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     dbDelta( $ced_sql );
-    
-    
-
 
 	add_option( 'ced_db_version', $ced_db_version );
 }
@@ -126,11 +156,7 @@ add_action( 'init', 'ced_post');
 
 // display ced_user table  (30-12-2020)
 function wporg_options_page_html() {
-    require_once("Ced_user_data/Ced_user_data.php");
-    $user = new Ced_users_List();
-    $user->prepare_items();
-    $user->display();
-    
+   
     ?>
     <div class="wrap">
       <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
@@ -161,6 +187,36 @@ function wporg_options_page_html() {
         <?php
         // output security fields for the registered setting "wporg_options"
         settings_fields( 'wporg_options' );
+        require_once("Ced_user_data/Ced_user_data.php");
+        $user = new Ced_users_List();
+        $user->prepare_items();
+        $user->display();
+        
+        // output setting sections and their fields
+        // (sections are registered for "wporg", each field is registered to a specific section)
+        do_settings_sections( 'wporg' );
+        // output save settings button
+        submit_button( __( 'Save Settings', 'textdomain' ) );
+        ?>
+      </form>
+    </div>
+<?php
+}
+
+
+function wporg_options_html() {
+    ?>
+    <div class="wrap">
+      <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
+      <form action="options.php" method="post">
+        <?php
+        // output security fields for the registered setting "wporg_options"
+        settings_fields( 'wporg_options' );
+        require_once("ced_subscribe/Ced_subscribe.php");
+        $user = new Ced_subscribe();
+        $user->prepare_items();
+        $user->display();
+        
         // output setting sections and their fields
         // (sections are registered for "wporg", each field is registered to a specific section)
         do_settings_sections( 'wporg' );
@@ -180,6 +236,16 @@ function wporg_options_cedpage() {
         'manage_options', // capabality
         'menu', //slug
         'wporg_options_page_html', //function
+        0, 
+        5 //position
+    );
+
+    add_menu_page(
+        'Ced Mymenu', //menu title
+        'Ced Mymenu', //menu name
+        'manage_options', // capabality
+        'mymenu', //slug
+        'wporg_options_html', //function
         0, 
         5 //position
     );
@@ -274,23 +340,23 @@ class wpb_subscribe extends WP_Widget {
     
     public function widget( $args, $instance ) {
         $title = apply_filters( 'widget_title', $instance['title'] );
-        
         // before and after widget arguments are defined by themes
         echo $args['before_widget'];
-        if ( ! empty( $title ) ) {
+        if ( ! empty( $title ) ) 
             if ( is_single()) {  
-                echo $args['before_title'] . $title . $args['after_title']; ?>
-                <form method="POST">
-                <div>
+                if (in_array(get_post_type(), $instance['posttype'])) { 
+                    echo $args['before_title'] . $title . $args['after_title']; ?>
+                   <form method="POST"><div>
                     <label for="email" class="">Email: </label>
                     <input type="hidden" class="" id="id" name="id" value="<?php echo get_the_ID(); ?>">
                     <input type="email" class="" id="email" placeholder="Enter email" name="email" required>
-                </div></br>
-                <button type="submit" name="subscribe" class="btn btn-primary">subscribe</button>
-                </form> </br>
-            <?php
+                    </div></br>
+                    <button type="submit" name="subscribe" class="btn btn-primary">subscribe</button>
+                    </form></br>
+                   <?php  
+                }
             } 
-        }
+
         // This is where you run the code and display the output
          //echo $args['after_widget'];
     }
@@ -328,6 +394,7 @@ class wpb_subscribe extends WP_Widget {
                  if($post_type == "attachment" || $post_type == "wpforms") {
                      continue;
                  }
+                 else {
                     if(is_array( $instance['posttype'])){
                         if (in_array($post_type, $instance['posttype'])) { //check if Post Type checkbox is     checked and display as check if so
                             $checked = "checked='checked'";
@@ -341,12 +408,14 @@ class wpb_subscribe extends WP_Widget {
                     ?>
                         <input id="<?php echo $this->get_field_id('posttype') . $post_type; ?>" name="<?php echo $this->get_field_name('posttype[]'); ?>" type="checkbox" value="<?php echo $post_type; ?>" <?php echo $checked ?> /> <?php echo $post_type ?>
                     <?php
+                 }
                 
-            }
-
-        }
-        ?>
-    <?php 
+            } ?>
+            <p>
+                <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label> 
+                <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
+            </p>
+            <?php  }
     }
         
     // Updating widget replacing old instances with new
