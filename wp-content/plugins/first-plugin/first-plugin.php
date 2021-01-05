@@ -4,7 +4,7 @@
  * Plugin Name:       first-plugin
  * Plugin URI:        https://wordpress/wp-content/plugins/plugin-first/
  * Description:       Handle the basics with this plugin.
- * Version:           1.10.3
+ * Version:           1.0.0
  * Requires at least: 5.6
  * Requires PHP:      7.2
  * Author:            Shweta Awasthi

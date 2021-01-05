@@ -102,7 +102,6 @@ function wporg_cedoptions() {
 
 if(isset($_POST['submit'])) {
     $postval = isset($_POST['posttype']) ? $_POST['posttype'] :"";
-    
     update_option('customcolors', $postval);
 }
 
