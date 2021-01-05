@@ -37,12 +37,12 @@ add_filter( 'the_content_more_link', 'ced_more_link' );
 function wporg_custom_cedbox( $post ) {
     ?>
     <label for="wporg_field">Custom meta Box</label>
-    <input type="text" name="color" id="color">
+    <input type="text" name="color" id="color" value="<?php echo get_post_meta(get_the_ID() ,'colors' , 1); ?>">
     <?php
 }
 
 function wporg_add_ced_metabox() {
-    $screens = [ 'post' ];
+    $screens = get_option('customcolors');
     foreach ( $screens as $screen ) {
         add_meta_box(
             'wporg_metabox_id',              // Unique ID

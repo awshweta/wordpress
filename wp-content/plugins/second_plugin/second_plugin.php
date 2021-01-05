@@ -21,7 +21,7 @@
 function wporg_cedbox( $post ) {
     ?>
     <label for="wporg_field">Custom meta Box</label>
-    <input type="text" name="color" id="color">
+    <input type="text" name="color" id="color" value="<?php echo get_post_meta(get_the_ID(), 'colors', 1 ); ?>">
     <?php
 }
 
@@ -74,7 +74,7 @@ function wporg_cedoptions() {
         
         foreach ( $post_types  as $post_type ) {
             
-            if(is_array($post_types)){
+        if(is_array($post_types)){
             if (in_array($post_type, get_option('customcolors'))) { //check if Post Type checkbox is     checked and display as check if so
                 $checked = "checked='checked'";
             }

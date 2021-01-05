@@ -199,4 +199,4 @@ if ( is_user_logged_in() ) {
 	do_action( "wp_ajax_nopriv_{$action}" );
 }
 // Default status.
-wp_die( '0' );
+//wp_die( '0' );
