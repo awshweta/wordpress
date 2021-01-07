@@ -38,7 +38,6 @@ if ( is_singular() ) {
 					<?php the_category( ' ' ); ?>
 				</div><!-- .entry-categories-inner -->
 			</div><!-- .entry-categories -->
-
 			<?php
 		}
 

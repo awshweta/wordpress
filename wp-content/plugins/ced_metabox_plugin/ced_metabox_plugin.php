@@ -1,23 +1,28 @@
 <?php
  
 /**
- * Plugin Name:       second-plugin
+ * Plugin Name:       ced_metabox_plugin
  * Plugin URI:        https://wordpress/wp-content/plugins/plugin-first/
  * Description:       Handle the basics with this plugin.
- * Version:           1.10.3
+ * Version:           1.0.0
  * Requires at least: 5.6
  * Requires PHP:      7.2
  * Author:            Shweta Awasthi
  * Author URI:        https://author.example.com/
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       second-plugin
+ * Text Domain:       ced_metabox_plugin
  * Domain Path:       /languages
- * Text Domain:       second-plugin
  */
 
 
 // Custom meta box (2-1-2021)
+/**
+ * wporg_cedbox
+ *
+ * @param  mixed $post
+ * @return void
+ */
 function wporg_cedbox( $post ) {
     ?>
     <label for="wporg_field">Custom meta Box</label>
@@ -25,6 +30,11 @@ function wporg_cedbox( $post ) {
     <?php
 }
 
+/**
+ * wporg_ced_metabox
+ *
+ * @return void
+ */
 function wporg_ced_metabox() {
     $screens= get_option('customcolors');
     //$screens = [ 'post' ];
@@ -40,6 +50,12 @@ function wporg_ced_metabox() {
     
 }
 
+/**
+ * savedata
+ *
+ * @param  mixed $post_id
+ * @return void
+ */
 function savedata( int $post_id ) {
     if ( array_key_exists( 'color', $_POST ) ) {
         update_post_meta(
@@ -53,6 +69,11 @@ add_option('customcolors');
 add_action( 'add_meta_boxes', 'wporg_ced_metabox' );
 add_action( 'save_post', 'savedata' );
 
+/**
+ * wporg_cedoptions
+ *
+ * @return void
+ */
 function wporg_cedoptions() {
     ?>
     <div class="wrap">
@@ -105,8 +126,13 @@ if(isset($_POST['submit'])) {
     update_option('customcolors', $postval);
 }
 
-// add menu and submenu (29-12-2020)
-function wporg_options_cedmenu() {
+// add menu  (29-12-2020)
+/**
+ * ced_menu_page
+ *
+ * @return void
+ */
+function ced_menu_page() {
     add_menu_page(
         'Ced secondMenu', //menu title
         'Ced secondMenu', //menu name
@@ -117,6 +143,6 @@ function wporg_options_cedmenu() {
         5 //position
     );
 }
-add_action( 'admin_menu', 'wporg_options_cedmenu' );
+add_action( 'admin_menu', 'ced_menu_page' );
 
 

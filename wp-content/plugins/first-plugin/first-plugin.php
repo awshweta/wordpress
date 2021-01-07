@@ -17,6 +17,11 @@
  */
 
  // bootstrap link (30-12-2020)
+/**
+ * cedBootstrapstyle
+ *
+ * @return void
+ */
 function cedBootstrapstyle() 
 {
     wp_enqueue_style('bootstrap4', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css');
@@ -28,12 +33,23 @@ function cedBootstrapstyle()
 add_action( 'wp_enqueue_scripts', 'cedBootstrapstyle' );
 
 //change more to click to read (29-12-2020)
+/**
+ * ced_more_link
+ *
+ * @return void
+ */
 function ced_more_link() {
     return '<a class="more-link" href="' . get_permalink() . '">Click to Read!</a>';
 }
 add_filter( 'the_content_more_link', 'ced_more_link' );
 
 // Custom meta box (2-1-2021)
+/**
+ * wporg_custom_cedbox
+ *
+ * @param  mixed $post
+ * @return void
+ */
 function wporg_custom_cedbox( $post ) {
     ?>
     <label for="wporg_field">Custom meta Box</label>

@@ -1,5 +1,5 @@
 <?php
-
+//die("archive portfolio");
 /**
 * Template Name: Full Width Page
 *
