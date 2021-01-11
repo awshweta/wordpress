@@ -1,4 +1,5 @@
 <?php
+die("hgf");
 /**
  * Template part for displaying single posts.
  *

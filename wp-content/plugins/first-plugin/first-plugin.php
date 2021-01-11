@@ -2,18 +2,16 @@
  
 /**
  * Plugin Name:       first-plugin
- * Plugin URI:        https://wordpress/wp-content/plugins/plugin-first/
+ * Plugin URI:        https://wordpress/wp-content/plugins/first-plugin/
  * Description:       Handle the basics with this plugin.
  * Version:           1.0.0
  * Requires at least: 5.6
  * Requires PHP:      7.2
  * Author:            Shweta Awasthi
- * Author URI:        https://author.example.com/
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       first-plugin
  * Domain Path:       /languages
- * Text Domain:       first-plugin
  */
 
  // bootstrap link (30-12-2020)
@@ -115,7 +113,7 @@ function ced_createTable() {
 		PRIMARY KEY  (id)
 	) $charset_collate;";
 
-	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	//require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     dbDelta( $ced_sql );
 
 	add_option( 'ced_db_version', $ced_db_version );
@@ -150,7 +148,7 @@ function ced_post() {
             'public'              => true,
             'show_ui'             => true,
             'show_in_menu'        => true,
-            'show_in_nav_menus'   => true,
+            'show_in_nav_menus'   => false,
             'show_in_admin_bar'   => true,
             'menu_position'       => 5,
             'can_export'          => true,

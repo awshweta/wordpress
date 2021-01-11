@@ -1,4 +1,5 @@
 <?php
+die("jh");
 /**
  * Template part for displaying posts
  *

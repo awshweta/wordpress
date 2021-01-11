@@ -1,4 +1,5 @@
 <?php
+//die("fgdkj");
 /**
  * Single variation cart button
  *

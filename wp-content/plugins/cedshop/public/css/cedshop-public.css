@@ -1,0 +1,11 @@
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+ .table {
+     width:100%;
+ }
+
+ .table .image img {
+     width:40%;
+ }

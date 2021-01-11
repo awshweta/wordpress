@@ -1,4 +1,5 @@
 <?php //include("header.php"); 
+//die("index");
  get_header();
 ?>
 
@@ -14,6 +15,7 @@
 										<p class="meta">Posted by <a href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>"><?php the_author(); ?></a> on <?php 
 										$val = get_the_date();
 										echo $val;
+										//echo ABSPATH;
 											if (  has_category() ) {
 												?>
 												<div class="entry-categories">

@@ -23,87 +23,88 @@
       }
       add_action( 'init', 'register_my_menus' );
 
-      function wood_theme_support() {
+    //   function wood_theme_support() {
 
-        // Add default posts and comments RSS feed links to head.
-        add_theme_support( 'automatic-feed-links' );
+    //     // Add default posts and comments RSS feed links to head.
+    //     add_theme_support( 'automatic-feed-links' );
     
-        // Custom background color.
-        add_theme_support(
-            'custom-background',
-            array(
-                'default-color' => 'f5efe0',
-            )
-        );
+    //     // Custom background color.
+    //     add_theme_support(
+    //         'custom-background',
+    //         array(
+    //             'default-color' => 'f5efe0',
+    //         )
+    //     );
     
-        // Set content-width.
-        global $content_width;
-        if ( ! isset( $content_width ) ) {
-            $content_width = 580;
-        }
+    //     // Set content-width.
+    //     global $content_width;
+    //     if ( ! isset( $content_width ) ) {
+    //         $content_width = 580;
+    //     }
     
-        /*
-         * Enable support for Post Thumbnails on posts and pages.
-         *
-         * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
-         */
-        add_theme_support( 'post-thumbnails' );
+    //     /*
+    //      * Enable support for Post Thumbnails on posts and pages.
+    //      *
+    //      * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
+    //      */
+    //     add_theme_support( 'post-thumbnails' );
     
-        // Set post thumbnail size.
-        set_post_thumbnail_size( 1200, 9999 );
+    //     // Set post thumbnail size.
+    //     set_post_thumbnail_size( 1200, 9999 );
     
-        // Add custom image size used in Cover Template.
-        add_image_size( 'twentytwenty-fullscreen', 1980, 9999 );
+    //     // Add custom image size used in Cover Template.
+    //     add_image_size( 'twentytwenty-fullscreen', 1980, 9999 );
     
-        // Custom logo.
-        $logo_width  = 120;
-        $logo_height = 90;
+    //     // Custom logo.
+    //     $logo_width  = 120;
+    //     $logo_height = 90;
     
-        // If the retina setting is active, double the recommended width and height.
-        if ( get_theme_mod( 'retina_logo', false ) ) {
-            $logo_width  = floor( $logo_width * 2 );
-            $logo_height = floor( $logo_height * 2 );
-        }
+    //     // If the retina setting is active, double the recommended width and height.
+    //     if ( get_theme_mod( 'retina_logo', false ) ) {
+    //         $logo_width  = floor( $logo_width * 2 );
+    //         $logo_height = floor( $logo_height * 2 );
+    //     }
     
-        add_theme_support(
-            'custom-logo',
-            array(
-                'height'      => $logo_height,
-                'width'       => $logo_width,
-                'flex-height' => true,
-                'flex-width'  => true,
-            )
-        );
+    //     add_theme_support(
+    //         'custom-logo',
+    //         array(
+    //             'height'      => $logo_height,
+    //             'width'       => $logo_width,
+    //             'flex-height' => true,
+    //             'flex-width'  => true,
+    //         )
+    //     );
     
-        /*
-         * Let WordPress manage the document title.
-         * By adding theme support, we declare that this theme does not use a
-         * hard-coded <title> tag in the document head, and expect WordPress to
-         * provide it for us.
-         */
-        add_theme_support( 'title-tag' );
+    //     /*
+    //      * Let WordPress manage the document title.
+    //      * By adding theme support, we declare that this theme does not use a
+    //      * hard-coded <title> tag in the document head, and expect WordPress to
+    //      * provide it for us.
+    //      */
+    //     add_theme_support( 'title-tag' );
+    //     add_theme_support( 'post-formats', array( 'aside', 'gallery' ) );
     
-        /*
-         * Switch default core markup for search form, comment form, and comments
-         * to output valid HTML5.
-         */
-        add_theme_support(
-            'html5',
-            array(
-                'search-form',
-                'comment-form',
-                'comment-list',
-                'gallery',
-                'caption',
-                'script',
-                'style',
-                'navigation-widgets',
-            )
-        );
+    //     /*
+    //      * Switch default core markup for search form, comment form, and comments
+    //      * to output valid HTML5.
+    //      */
+    //     add_theme_support(
+    //         'html5',
+    //         array(
+    //             'search-form',
+    //             'comment-form',
+    //             'comment-list',
+    //             'gallery',
+    //             'caption',
+    //             'script',
+    //             'style',
+    //             'navigation-widgets',
+    //         )
+    //     );
     
-    }
+    // }
     
-    add_action( 'after_setup_theme', 'wood_theme_support' );
+    // add_action( 'after_setup_theme', 'wood_theme_support' );
 
     function themename_widgets_init() {
         register_sidebar( array(
@@ -111,11 +112,10 @@
             'id'            => 'sidebar-1',
             'before_widget' => '<aside id="%1$s" class="widget %2$s">',
             'after_widget'  => '</aside>',
-            'before_title'  => '<h3 class="widget-title">',
-            'after_title'   => '</h3>',
+            'before_title'  => '<h2 class="widget-title">',
+            'after_title'   => '</h2>',
         ) );
     }
-
     add_action( 'widgets_init', 'themename_widgets_init' );
 
     function custom_post_type() {
@@ -190,55 +190,54 @@
         * Author URI: https://codex.wordpress.org/User:Aternus
         */
         //custom taxonomy (28-12-2020)
-        function wporg_register_taxonomy_course() {
-            $labels = array(
-                'name'              => _x( 'Categories', 'taxonomy general name' ),
-                'singular_name'     => _x( 'Category', 'taxonomy singular name' ),
-                'search_items'      => __( 'Search Category' ),
-                'all_items'         => __( 'All Category' ),
-                'parent_item'       => __( 'Parent Category' ),
-                'parent_item_colon' => __( 'Parent Category:' ),
-                'edit_item'         => __( 'Edit Category' ),
-                'update_item'       => __( 'Update Category' ),
-                'add_new_item'      => __( 'Add New Category' ),
-                'new_item_name'     => __( 'New Category Name' ),
-                'menu_name'         => __( 'Category' ),
-            );
-            $args   = array(
-                'hierarchical'      => true, // make it hierarchical (like categories)
-                'labels'            => $labels,
-                'show_ui'           => true,
-                'show_admin_column' => true,
-                'query_var'         => true,
-                'rewrite'           => [ 'slug' => 'Category' ],
-            );
-            register_taxonomy( 'Category', array('portfolio') , $args );
+        // function wporg_register_taxonomy_course() {
+        //     $labels = array(
+        //         'name'              => _x( 'Categories', 'taxonomy general name' ),
+        //         'singular_name'     => _x( 'Category', 'taxonomy singular name' ),
+        //         'search_items'      => __( 'Search Category' ),
+        //         'all_items'         => __( 'All Category' ),
+        //         'parent_item'       => __( 'Parent Category' ),
+        //         'parent_item_colon' => __( 'Parent Category:' ),
+        //         'edit_item'         => __( 'Edit Category' ),
+        //         'update_item'       => __( 'Update Category' ),
+        //         'add_new_item'      => __( 'Add New Category' ),
+        //         'new_item_name'     => __( 'New Category Name' ),
+        //         'menu_name'         => __( 'Category' ),
+        //     );
+        //     $args   = array(
+        //         'hierarchical'      => true, // make it hierarchical (like categories)
+        //         'labels'            => $labels,
+        //         'show_ui'           => true,
+        //        // 'show_admin_column' => true,
+        //         'query_var'         => true,
+        //         'rewrite'           => [ 'slug' => 'Category' ],
+        //     );
+        //     register_taxonomy( 'Category', array('portfolio') , $args );
 
-            $labels = array(
-                'name'              => _x( 'Tags', 'taxonomy general name' ),
-                'singular_name'     => _x( 'Tag', 'taxonomy singular name' ),
-                'search_items'      => __( 'Search Tag' ),
-                'all_items'         => __( 'All Tag' ),
-                'parent_item'       => __( 'Parent Tag' ),
-                'parent_item_colon' => __( 'Parent Tag:' ),
-                'edit_item'         => __( 'Edit Tag' ),
-                'update_item'       => __( 'Update Tag' ),
-                'add_new_item'      => __( 'Add New Tag' ),
-                'new_item_name'     => __( 'New Tag Name' ),
-                'menu_name'         => __( 'Tag' ),
-            );
-            $args   = array(
-                'hierarchical'      => false, // make it hierarchical (like categories)
-                'labels'            => $labels,
-                'show_ui'           => true,
-                'show_admin_column' => true,
-                'query_var'         => true,
-                'rewrite'           => [ 'slug' => 'Tag' ],
-            );
-            register_taxonomy( 'Tag', array('portfolio') , $args );
-
-        }
-        add_action( 'init', 'wporg_register_taxonomy_course' );
+        //     $labels = array(
+        //         'name'              => _x( 'Tags', 'taxonomy general name' ),
+        //         'singular_name'     => _x( 'Tag', 'taxonomy singular name' ),
+        //         'search_items'      => __( 'Search Tag' ),
+        //         'all_items'         => __( 'All Tag' ),
+        //         'parent_item'       => __( 'Parent Tag' ),
+        //         'parent_item_colon' => __( 'Parent Tag:' ),
+        //         'edit_item'         => __( 'Edit Tag' ),
+        //         'update_item'       => __( 'Update Tag' ),
+        //         'add_new_item'      => __( 'Add New Tag' ),
+        //         'new_item_name'     => __( 'New Tag Name' ),
+        //         'menu_name'         => __( 'Tag' ),
+        //     );
+        //     $args   = array(
+        //         'hierarchical'      => false, // make it hierarchical (like categories)
+        //         'labels'            => $labels,
+        //         'show_ui'           => true,
+        //         'show_admin_column' => true,
+        //         'query_var'         => true,
+        //         'rewrite'           => [ 'slug' => 'Tag' ],
+        //     );
+        //     register_taxonomy( 'Tag', array('portfolio') , $args );
+        // }
+        // add_action( 'init', 'wporg_register_taxonomy_course' );
 
 
         // Custom Widget (28-12-2020)
@@ -310,5 +309,38 @@
             register_widget( 'wpb_widget' );
         }
         add_action( 'widgets_init', 'wpb_load_widget' );
+      function func() {
+        
+        add_filter("the_title", "filter_title",10,2);
+        add_filter("the_title", "filter_ttl",2,2);
+
+ 
+      }
+        add_action("init" , "func");
+
+        function filter_title($title , $post_id) {
+            global $post;
+            if ( ! empty( $title ) ) 
+                if ( is_single() ) {  
+                    if($post->post_type == "portfolio") {
+                        return $title." Shweta ";
+                    }  
+                }
+                else {
+                    return $title;
+                }
+        }
+        function filter_ttl($title , $post_id) {
+            global $post;
+            if ( ! empty( $title ) ) 
+                if ( is_single() ) {  
+                    if($post->post_type == "portfolio") {
+                        return $title." Shubham ";
+                    }  
+                }
+                else {
+                    return $title;
+                }
+        }
 
 ?>

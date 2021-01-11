@@ -1,4 +1,5 @@
 <?php
+//die("fgdkj");
 /**
  * Simple product add to cart
  *
@@ -51,7 +52,6 @@ if ( $product->is_in_stock() ) : ?>
 		<?php do_action( 'woocommerce_after_add_to_cart_button' ); ?>
 		<div class="clearfix"></div>
 	</form>
-
 	<?php do_action( 'woocommerce_after_add_to_cart_form' ); ?>
 
 <?php endif; ?>

@@ -1,4 +1,5 @@
 <?php
+die("fgdkj");
 /**
  * External product add to cart
  *

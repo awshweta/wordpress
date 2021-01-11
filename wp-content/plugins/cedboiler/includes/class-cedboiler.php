@@ -184,8 +184,9 @@ class Cedboiler {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-		//$plugin_public->ced_show_metabox_value();
 		$this->loader->add_filter( 'the_content', $plugin_public, 'ced_show_metabox_value');
+
+		//add_shortcode( 'product', array($plugin_public , 'ced_display_all_product') );
 	}
 
 	/**

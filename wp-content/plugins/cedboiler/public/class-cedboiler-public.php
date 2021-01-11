@@ -100,7 +100,12 @@ class Cedboiler_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cedboiler-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( 'ced_handler', plugin_dir_url( __FILE__ ) . 'js/cedboiler-public.js', array( 'jquery' ), $this->version, false );
+		wp_localize_script('ced_handler', 'ajax_object',
+			array( 
+				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+			)
+		);
 
 	}
 	public function ced_show_metabox_value($content) {

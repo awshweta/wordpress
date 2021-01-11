@@ -1,4 +1,5 @@
 <?php
+//die("fgdkj");
 /**
  * Grouped product add to cart
  *

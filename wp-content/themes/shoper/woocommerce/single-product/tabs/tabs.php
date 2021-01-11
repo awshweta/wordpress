@@ -1,4 +1,5 @@
 <?php
+//die("fgdkj");
 /**
  * Single Product tabs
  *

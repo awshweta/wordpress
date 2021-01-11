@@ -2,13 +2,13 @@
  
 /**
  * Plugin Name:       ced_metabox_plugin
- * Plugin URI:        https://wordpress/wp-content/plugins/plugin-first/
+ * Plugin URI:        https://wordpress/wp-content/plugins/ced_metabox_plugin/
  * Description:       Handle the basics with this plugin.
  * Version:           1.0.0
  * Requires at least: 5.6
  * Requires PHP:      7.2
  * Author:            Shweta Awasthi
- * Author URI:        https://author.example.com/
+ * Author URI:        awshweta@gmail.com
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       ced_metabox_plugin
@@ -63,6 +63,7 @@ function savedata( int $post_id ) {
             'colors',
             $_POST['color']
         );
+        do_action("sub");
     }
 }
 add_option('customcolors');
@@ -109,7 +110,7 @@ function wporg_cedoptions() {
             <?php
         } ?>
         <input type="submit" name="submit" value="save">
-        <?php        
+        <?php   
         // output setting sections and their fields
         // (sections are registered for "wporg", each field is registered to a specific section)
        // do_settings_sections( 'wporg' );
