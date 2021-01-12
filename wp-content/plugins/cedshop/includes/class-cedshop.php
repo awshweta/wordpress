@@ -162,6 +162,7 @@ class Cedshop {
 		$this->loader->add_action( 'init', $plugin_admin , 'ced_register_taxonomy' );
 		$this->loader->add_action( 'after_setup_theme', $plugin_admin , 'ced_theme_support' );
 		$this->loader->add_action( 'after_setup_theme', $plugin_admin , 'ced_theme_support' );
+		$this->loader->add_action( 'wp_logout', $plugin_admin ,'ced_user_logout' );
 		
 	}
 
@@ -179,9 +180,9 @@ class Cedshop {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_filter( 'single_template', $plugin_public ,'ced_single_page' );
+		$this->loader->add_action( 'init', $plugin_public ,'ced_add_session_data_to_cart' );
 		add_shortcode( 'product', array($plugin_public , 'ced_display_all_product') );
 		add_shortcode( 'cart', array($plugin_public , 'ced_display_all_cart_product') );
-		//add_shortcode( 'cart', array($plugin_public , 'ced_display_all_cart_product') );
 		
 	}
 

@@ -114,7 +114,6 @@ class Cedshop_Admin {
 			'rewrite' => array('slug' => 'Products' ),
 			'menu_name'           => __('Products' ),
 			'all_items'           => __( 'All Products'),
-			'view_item'           => __( 'View Products' ),
 			'add_new_item'        => __( 'Add New Products' ),
 			'add_new'             => __( 'Add New' ),
 			'edit_item'           => __( 'Edit Products')
@@ -126,7 +125,7 @@ class Cedshop_Admin {
 			'labels'              => $labels,
 			'supports'            => array( 'title', 'editor','thumbnail', 'comments', 'revisions' ),
 			'taxonomies'          => array( '' ),
-			'hierarchical'        => true,
+			'hierarchical'        => false,
 			'public'              => true,
 			'has_archive'         => true,
 		
@@ -156,7 +155,7 @@ class Cedshop_Admin {
 	public function ced_metabox() {
 		$screen = "Products";
 		add_meta_box(
-			'ced_metabox_id',              // Unique ID
+			'Inventory',              // Unique ID
 			'Inventory',      // Box title
 			array( $this, 'ced_metabox_form' ),  // Content callback, must be of type callable
 			$screen                           // Post type
@@ -248,7 +247,6 @@ class Cedshop_Admin {
 			'rewrite'           => [ 'slug' => 'Category' ],
 		);
 		register_taxonomy( 'cat', ['products' ], $args );
-
    }
    
    /**
@@ -258,9 +256,6 @@ class Cedshop_Admin {
     * @return void
     */
    public function ced_theme_support() {
-
-		// Add default posts and comments RSS feed links to head.
-		add_theme_support( 'automatic-feed-links' );
 
 		// Custom background color.
 		add_theme_support(
@@ -285,9 +280,6 @@ class Cedshop_Admin {
 
 		// Set post thumbnail size.
 		set_post_thumbnail_size( 1200, 9999 );
-
-		// Add custom image size used in Cover Template.
-		add_image_size( 'twentytwenty-fullscreen', 1980, 9999 );
 
 		// Custom logo.
 		$logo_width  = 120;
@@ -336,5 +328,16 @@ class Cedshop_Admin {
 			)
 		);
 
+	}
+	
+	/**
+	 * ced_user_logout
+	 *
+	 * @return void
+	 */
+	public function ced_user_logout() {
+		session_start();
+		session_unset();
+		session_destroy();
 	}
 }

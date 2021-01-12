@@ -1,16 +1,44 @@
-<?php session_start();
- get_header(); 
+<?php 
 $r = false;
 if(empty($_SESSION['cart'])){
     $_SESSION['cart']= array();
-   // echo print_r($_SESSION['cart']);
     $r=true;
 }
 else{
     $r=false;
 }
- ?>
-<div class="post">
+$message = "";
+?>
+
+<?php
+if(isset($_POST['addToCart'])) {
+    $id =  get_current_user_id();
+    //echo $id;
+    $Inventory = get_post_meta(get_the_ID(), 'Inventory', 1 );
+    $title = get_the_title();
+    $image = isset($_POST['image']) ? $_POST['image'] :"";
+    $price = isset($_POST['price']) ? $_POST['price'] :"";
+    $pid = $post->ID;
+    $qty =1;
+    $a = false;
+    $b = false;
+    $arr = array('id'=>$pid, 'title'=> $title, 'src'=>$image, 'price'=>$price, 'qty'=>$qty);
+    foreach ($_SESSION['cart'] as $key =>$value) {
+        if ($value['title']== $title) {
+            $_SESSION["cart"][$key]["qty"]=$_SESSION["cart"][$key]["qty"]+1;
+            $message = "Quantity updated successfully";
+            $a=true;
+            break;
+        }
+    }
+    if($a == false) {
+        array_push($_SESSION['cart'],$arr);
+        $message = "Product added to cart successfully";
+    }
+}
+
+get_header(); ?>
+<div class="success"><?php echo $message; ?></div>
 <div class="post">
 <form method="post">
     <table class="table">
@@ -37,62 +65,16 @@ else{
                 <input type="hidden" name="price" Value="<?php  echo get_post_meta(get_the_ID(), 'Price', 1 ); ?>">
            <?php } ?>
     </td>
-    <td><input type="submit" name="addToCart" Value="Add To Cart"></td>
+    <?php $Inventory = get_post_meta(get_the_ID(), 'Inventory', 1 );
+    if( $Inventory == 0 ) { ?>
+        <td><input type="submit" name="addToCart" Value="Add To Cart" disabled></td>
+    <?php } else { ?>
+        <td><input type="submit" name="addToCart" Value="Add To Cart"></td>
+   <?php } ?>
     </tr>
 </table>
 </form>
 </div> 
-<?php
-if(isset($_POST['addToCart'])) {
-    $id =  get_current_user_id();
-    //echo $id;
-    $title = get_the_title();
-    $image = isset($_POST['image']) ? $_POST['image'] :"";
-    $price = isset($_POST['price']) ? $_POST['price'] :"";
-    $pid = $post->ID;
-    $qty =1;
-    $a = false;
-    $b = false;
-    $arr = array('id'=>$pid, 'title'=> $title, 'src'=>$image, 'price'=>$price, 'qty'=>$qty);
-    //print_r($arr);
-    if($id > 0 || $id != "") {
-        $cartdata = get_user_meta( $id, 'cartdata', true );
-        //echo '<pre>';
-        //print_r($cartdata);
-        if(empty($cartdata)) {
-            $cartdata = array($arr);
-            add_user_meta( $id, 'cartdata', $cartdata);
-        }
-         else {
-            foreach($cartdata as $k=>$val) {
-                if($val['id'] == $pid) {
-                    $cartdata[$k]['qty'] = $cartdata[$k]['qty'] + 1;
-                    $a = true;
-                    break;
-                }
-            }
-            if($a == true) {
-                update_user_meta( $id, 'cartdata', $cartdata);
-            }
-            if($a == false) {
-                $cartdata[] = $arr;
-                update_user_meta( $id, 'cartdata', $cartdata);
-            }
-        }
-    }
-    else {
-        foreach ($_SESSION['cart'] as $key =>$value) {
-            if ($value['title']== $title) {
-                $_SESSION["cart"][$key]["qty"]=$_SESSION["cart"][$key]["qty"]+1;
-                $a=true;
-                break;
-            }
-        }
-        if($a == false) {
-            array_push($_SESSION['cart'],$arr);
-        }
-    }
-    //print_r($_SESSION['cart']);
-}
- get_footer(); ?>
+<?php get_footer(); ?>
+
 

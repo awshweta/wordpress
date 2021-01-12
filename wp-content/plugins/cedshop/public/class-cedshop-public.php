@@ -51,7 +51,7 @@ class Cedshop_Public {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
+		session_start();
 	}
 
 	/**
@@ -108,17 +108,45 @@ class Cedshop_Public {
 	public function ced_display_all_cart_product() {
 		if(isset($_POST['delete'])) {
 			$userid =  get_current_user_id();
-			$cart = get_user_meta($userid,'cartdata',true); 
 			$deleteId = $_POST['delete'];
 			//echo $deleteId;
-			if(!empty($cart)) {
-				foreach( $cart as $k=>$v ) {
-					if($v['id'] == $deleteId) {
-						echo $v['id'];
-						unset($cart[$k]);
+			if(!empty($_SESSION['cart'])) {
+				foreach ($_SESSION['cart'] as $key =>$value) {
+					if($value['id'] == $deleteId) {
+						//echo $value['id'];
+						unset($_SESSION['cart'][$key]);
 					}
 				}
-				update_user_meta( $userid, 'cartdata', $cart);
+				update_user_meta( $userid, 'cartdata', $_SESSION['cart']);
+			}
+		}
+
+		if(isset($_POST['deleteSessiondata'])) {
+
+			$deleteId = $_POST['deleteSessiondata'];
+			//echo $deleteId;
+			if(!empty($_SESSION['cart'])) {
+				foreach ($_SESSION['cart'] as $key =>$value) {
+					if($value['id'] == $deleteId) {
+						echo $value['id'];
+						unset($_SESSION['cart'][$key]);
+					}
+				}
+				asort($_SESSION['cart']);
+			}
+		}
+
+		if(isset($_POST['editSessiondata'])) {
+
+			$editId = $_POST['editSessiondata'];
+			$qty = $_POST['qty'.$editId.''];
+			//echo $qty;
+			if(!empty($_SESSION['cart'])) {
+				foreach ($_SESSION['cart'] as $key =>$value) {
+					if($value['id'] == $editId) {
+						$_SESSION['cart'][$key]['qty'] = $qty;
+					}
+				}
 			}
 		}
 
@@ -127,20 +155,58 @@ class Cedshop_Public {
 			$cart = get_user_meta($userid,'cartdata',true); 
 			$editId = $_POST['edit'];
 			$qty = $_POST['qty'.$editId.''];
-			if(!empty($cart)) {
-				foreach( $cart as $k=>$v ) {
-					if($v['id'] == $editId) {
-						$cart[$k]['qty'] = $qty;
+			if(!empty($_SESSION['cart'])) {
+				foreach ($_SESSION['cart'] as $key =>$value) {
+					if($value['id'] == $editId) {
+						$_SESSION['cart'][$key]['qty'] = $qty;
 					}
 				}
+				$cart = $_SESSION['cart'];
 				update_user_meta( $userid, 'cartdata', $cart);
 			}
 		}
 
-		$id =  get_current_user_id();
-		$total = 0;
-		$cart = get_user_meta($id,'cartdata',true); ?>
-		<form method="post">
+		if(is_user_logged_in() == true) {
+			$id =  get_current_user_id();
+			$total = 0;
+			$cart = get_user_meta($id,'cartdata',true); ?>
+			<form method="post">
+				<table class="table">
+				<tr>
+					<th>Image</th>
+					<th>Title</th>
+					<th>Quantity</th>
+					<th>Price</th>
+					<th>Total</th>
+					<th>Action</th>
+				<tr>
+				<?php
+				if(!empty($cart)) {
+					foreach( $cart as $k=>$v ) { 
+						?>
+						<tr><td class="image"><img src=<?php echo esc_url($v['src']);?>></td>
+						<td><?php echo esc_attr($v['title']); ?></td>
+						<td><input type="number" min="0" name="qty<?php echo esc_attr($v['id']);?>" value="<?php echo esc_attr($v['qty']); ?>" required></td>
+						<td><?php echo esc_attr($v['price']); ?></td>
+						<td><?php echo  esc_attr($v['qty'])*esc_attr($v['price']); ?></td>
+						<td><button type="submit" name="delete" class="btn btn-danger" value="<?php echo esc_attr($v['id']);?>">Delete</button></td>
+						<td><button type="submit" name="edit" class="btn btn-success" value="<?php echo esc_attr($v['id']);?>">Edit</button></td></tr>
+					<?php }
+				} ?>
+				</table>
+			</form>
+			<?php
+			if(!empty($cart)) {
+				foreach( $cart as $k=>$v ) {
+					$total = $total + $v['qty']*$v['price'];
+				}
+				echo 'Total Price ='.$total;
+			}
+		}
+		else {
+			$total = 0;
+			//session_start(); ?>
+			<form method="post">
 			<table class="table">
 			<tr>
 				<th>Image</th>
@@ -151,28 +217,46 @@ class Cedshop_Public {
 				<th>Action</th>
 			<tr>
 			<?php
-			if(!empty($cart)) {
-				foreach( $cart as $k=>$v ) { 
-					 ?>
-					<tr><td class="image"><img src=<?php echo esc_url($v['src']);?>></td>
-					<td><?php echo esc_attr($v['title']); ?></td>
-					<td><input type="number" min="0" name="qty<?php echo esc_attr($v['id']);?>" value="<?php echo esc_attr($v['qty']); ?>" required></td>
-					<td><?php echo esc_attr($v['price']); ?></td>
-					<td><?php echo  esc_attr($v['qty'])*esc_attr($v['price']); ?></td>
-					<td><button type="submit" name="delete" class="btn btn-danger" value="<?php echo esc_attr($v['id']);?>">Delete</button></td>
-					<td><button type="submit" name="edit" class="btn btn-success" value="<?php echo esc_attr($v['id']);?>">Edit</button></td></tr>
-				<?php }
-			} ?>
+				if(!empty($_SESSION['cart'])) {
+					foreach ($_SESSION['cart'] as $key =>$value) {
+						?>
+						<tr><td class="image"><img src=<?php echo $value['src'];?>></td>
+						<td><?php echo $value['title']; ?></td>
+						<td><input type="number" min="0" name="qty<?php echo $value['id'];?>" value="<?php echo $value['qty']; ?>" required></td>
+						<td><?php echo $value['price']; ?></td>
+						<td><?php echo $value['qty']*$value['price']; ?></td>
+						<td><button type="submit" name="deleteSessiondata" class="btn btn-danger" value="<?php echo $value['id'];?>">Delete</button></td>
+						<td><button type="submit" name="editSessiondata" class="btn btn-success" value="<?php echo $value['id'];?>">Edit</button></td></tr>
+					<?php }
+				}
+				?>
 			</table>
-		</form>
-	<?php
-		if(!empty($cart)) {
-			foreach( $cart as $k=>$v ) {
-				$total = $total + $v['qty']*$v['price'];
+			</form>
+			<?php	
+			if(!empty($_SESSION['cart'])) {
+				foreach ($_SESSION['cart'] as $key =>$value) {
+					$total = $total + $value['qty']*$value['price'];
+				}
+				echo 'Total Price ='.$total;
 			}
-			echo 'Total Price ='.$total;
 		}
 	}	
+	
+	/**
+	 * This function is used for insert cart data in db
+	 * ced_add_session_data_to_cart
+	 *
+	 * @return void
+	 */
+	public function ced_add_session_data_to_cart() {
+		if(is_user_logged_in() == true) {
+			$id =  get_current_user_id();
+			if(!empty($_SESSION['cart'])) {
+				$cartdata = $_SESSION['cart'];
+				update_user_meta( $id, 'cartdata', $cartdata);
+			}
+		}
+	}
 
 	/**
 	 * This function is used for display all product
@@ -181,23 +265,14 @@ class Cedshop_Public {
 	 * @return void
 	 */
 	public function ced_display_all_product( ) {
-		if(get_query_var('paged') == 0) {
-			$loop = new WP_Query( array('posts_per_page'=>1,
-			'post_type'=>'products',
-			'paged' => get_query_var('paged') ? get_query_var('paged') : 1
-			)); 
-		}
-		else {
-			$loop = new WP_Query( array('posts_per_page'=>1,
-			'post_type'=>'products',
-			'paged' => get_query_var('page') ? get_query_var('page') : 1
-			)); 
-		}
-		$loop = new WP_Query( array('posts_per_page'=>1,
+		
+		$loop = new WP_Query( array('posts_per_page'=>4,
 		'post_type'=>'products',
-		'paged' => get_query_var('page') ? get_query_var('page') : 1
+		'paged' => !empty(get_query_var('page')) ? get_query_var('page') : 1
 		)); 
-		print_r(get_query_var('paged'));
+
+		//var_dump(get_query_var('page'));
+		//print_r($loop);
 		while ( $loop->have_posts() ) : 
 			$loop->the_post();
 		the_title('<h2 class="entry-title"><a href="' . get_permalink() . '" title="' . the_title_attribute( 'echo=0' ) . '" rel="bookmark">', '</a></h2>' );
@@ -214,8 +289,9 @@ class Cedshop_Public {
 			</div>
 		</div>
 		<?php endwhile;
+
 		echo paginate_links(array(
-		'current' => max( 1, get_query_var('paged') ),
+		'current' => max( 1, get_query_var('page') ),
 		'total' => $loop->max_num_pages
 		));
 	}

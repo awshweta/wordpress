@@ -42,6 +42,7 @@ class Cedshop_Activator {
 
 			wp_insert_post( $shop );
 		}
+		
 		if(!get_page_by_title('Cart')) {
 			$cart = array(
 				'post_title'    => 'Cart' ,
