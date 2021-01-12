@@ -15,6 +15,7 @@ if(isset($_POST['addToCart'])) {
     $id =  get_current_user_id();
     //echo $id;
     $Inventory = get_post_meta(get_the_ID(), 'Inventory', 1 );
+    echo $Inventory;
     $title = get_the_title();
     $image = isset($_POST['image']) ? $_POST['image'] :"";
     $price = isset($_POST['price']) ? $_POST['price'] :"";
@@ -23,12 +24,19 @@ if(isset($_POST['addToCart'])) {
     $a = false;
     $b = false;
     $arr = array('id'=>$pid, 'title'=> $title, 'src'=>$image, 'price'=>$price, 'qty'=>$qty);
+  
     foreach ($_SESSION['cart'] as $key =>$value) {
         if ($value['title']== $title) {
-            $_SESSION["cart"][$key]["qty"]=$_SESSION["cart"][$key]["qty"]+1;
-            $message = "Quantity updated successfully";
-            $a=true;
-            break;
+            if($Inventory <= $_SESSION['cart'][$key]['qty']) {
+               $message = "More than ".$Inventory." Product Not Available";
+               $a = true;
+            }
+            else {
+                $_SESSION["cart"][$key]["qty"]=$_SESSION["cart"][$key]["qty"]+1;
+                $message = "Quantity updated successfully";
+                $a=true;
+                break;
+            }
         }
     }
     if($a == false) {
@@ -66,10 +74,11 @@ get_header(); ?>
            <?php } ?>
     </td>
     <?php $Inventory = get_post_meta(get_the_ID(), 'Inventory', 1 );
-    if( $Inventory == 0 ) { ?>
+
+    if( $Inventory == 0  ) { ?>
         <td><input type="submit" name="addToCart" Value="Add To Cart" disabled></td>
     <?php } else { ?>
-        <td><input type="submit" name="addToCart" Value="Add To Cart"></td>
+        <td><input type="submit" id="addToCart" name="addToCart" Value="Add To Cart"></td>
    <?php } ?>
     </tr>
 </table>

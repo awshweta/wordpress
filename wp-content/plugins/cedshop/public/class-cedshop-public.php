@@ -106,6 +106,7 @@ class Cedshop_Public {
 	 * @return void
 	 */
 	public function ced_display_all_cart_product() {
+		$message = "";
 		if(isset($_POST['delete'])) {
 			$userid =  get_current_user_id();
 			$deleteId = $_POST['delete'];
@@ -143,8 +144,14 @@ class Cedshop_Public {
 			//echo $qty;
 			if(!empty($_SESSION['cart'])) {
 				foreach ($_SESSION['cart'] as $key =>$value) {
+					$Inventory = get_post_meta($value['id'], 'Inventory', 1 );
 					if($value['id'] == $editId) {
-						$_SESSION['cart'][$key]['qty'] = $qty;
+						if($Inventory <= $_SESSION['cart'][$key]['qty']) {
+							$message = "More than ".$Inventory." product not available";
+							break;
+						}else  {
+							$_SESSION['cart'][$key]['qty'] = $qty;
+						}
 					}
 				}
 			}
@@ -158,7 +165,13 @@ class Cedshop_Public {
 			if(!empty($_SESSION['cart'])) {
 				foreach ($_SESSION['cart'] as $key =>$value) {
 					if($value['id'] == $editId) {
-						$_SESSION['cart'][$key]['qty'] = $qty;
+						$Inventory = get_post_meta($value['id'], 'Inventory', 1 );
+						if($Inventory <= $_SESSION['cart'][$key]['qty']) {
+							$message = "More than ".$Inventory." product not available";
+							break;
+						}else  {
+							$_SESSION['cart'][$key]['qty'] = $qty;
+						}
 					}
 				}
 				$cart = $_SESSION['cart'];
@@ -170,6 +183,7 @@ class Cedshop_Public {
 			$id =  get_current_user_id();
 			$total = 0;
 			$cart = get_user_meta($id,'cartdata',true); ?>
+			<div class="success"><?php echo $message ; ?><div>
 			<form method="post">
 				<table class="table">
 				<tr>
@@ -192,20 +206,26 @@ class Cedshop_Public {
 						<td><button type="submit" name="delete" class="btn btn-danger" value="<?php echo esc_attr($v['id']);?>">Delete</button></td>
 						<td><button type="submit" name="edit" class="btn btn-success" value="<?php echo esc_attr($v['id']);?>">Edit</button></td></tr>
 					<?php }
-				} ?>
+				}
+				?>
 				</table>
+				<?php 
+				if(!empty($cart)) {
+					foreach( $cart as $k=>$v ) {
+						$total = $total + $v['qty']*$v['price'];
+					}
+					echo 'Total Price ='.$total;
+				} 
+				?>
+				</br>
+				<button type="submit" name="checkout" class="btn btn-success">Checkout</button></td>
 			</form>
 			<?php
-			if(!empty($cart)) {
-				foreach( $cart as $k=>$v ) {
-					$total = $total + $v['qty']*$v['price'];
-				}
-				echo 'Total Price ='.$total;
-			}
 		}
 		else {
 			$total = 0;
 			//session_start(); ?>
+			<div class="success"><?php echo $message ; ?><div>
 			<form method="post">
 			<table class="table">
 			<tr>
