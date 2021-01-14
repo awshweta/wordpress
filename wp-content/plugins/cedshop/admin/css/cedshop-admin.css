@@ -5,3 +5,6 @@
  #post .discount .disErr {
      color:red;
  }
+ #post .inventoryErr {
+    color:red;
+}

@@ -1,5 +1,7 @@
 <?php
-
+if ( ! class_exists( 'WP_List_Table' ) ) {
+	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+}
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -20,7 +22,7 @@
  * @subpackage Cedshop/admin
  * @author     Shweta Awasthi <shwetaawasthi@cedcoss.com>
  */
-class Cedshop_Admin {
+class Cedshop_Admin extends WP_List_Table {
 
 	/**
 	 * The ID of this plugin.
@@ -144,6 +146,7 @@ class Cedshop_Admin {
 		?>
 		<label for="wporg_field">Inventory</label>
 			<input type="number" min="0" name="inventory" id="inventory" value="<?php echo get_post_meta(get_the_ID(),"Inventory",1);?>" required>
+			<small class="inventoryErr"></small>
 		<?php
 	}
 
@@ -214,7 +217,7 @@ class Cedshop_Admin {
 			<input type="number" min="0"  name="regularPrice" id="regularPrice" value="<?php echo get_post_meta(get_the_ID(),"Price",1);?>" required></br>
 			<label for="wporg_field">Discounted Price</label>
 			<input type="number" min="0"  name="discountedPrice" id="discountedPrice" value="<?php echo get_post_meta(get_the_ID(),"discountPrice",1);?>">
-			<small class="disErr"></small>
+			<p class="disErr"></p>
 		</div>
 		<?php
 	}
@@ -328,6 +331,38 @@ class Cedshop_Admin {
 			)
 		);
 
+	}
+	
+	/**
+	 * This function is used to display order table detail
+	 * ced_display_order
+	 *
+	 * @return void
+	 */
+	public function ced_display_order() {
+		echo "<h1>".esc_html( get_admin_page_title() )."</h1>";
+		require_once("partials/Display_order_table.php");
+        $order = new Display_order_table();
+        $order->prepare_items();
+        $order->display();
+	}
+	
+	/**
+	 * This function is used to create menu page
+	 * ced_order_menu_page
+	 *
+	 * @return void
+	 */
+	public function ced_order_menu_page() {
+		add_menu_page(
+			'Order Detail', //menu title
+			'Ced Order Menu', //menu name
+			'manage_options', // capabality
+			'ordermenu', //slug
+			array( $this, 'ced_display_order' ), //function
+			0, 
+			5 //position
+		);
 	}
 	
 	/**

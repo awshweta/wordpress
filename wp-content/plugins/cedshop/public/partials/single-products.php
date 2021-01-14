@@ -15,7 +15,7 @@ if(isset($_POST['addToCart'])) {
     $id =  get_current_user_id();
     //echo $id;
     $Inventory = get_post_meta(get_the_ID(), 'Inventory', 1 );
-    echo $Inventory;
+    //echo $Inventory;
     $title = get_the_title();
     $image = isset($_POST['image']) ? $_POST['image'] :"";
     $price = isset($_POST['price']) ? $_POST['price'] :"";
@@ -75,7 +75,9 @@ get_header(); ?>
     </td>
     <?php $Inventory = get_post_meta(get_the_ID(), 'Inventory', 1 );
 
-    if( $Inventory == 0  ) { ?>
+    if( $Inventory == 0  ) { 
+       ?>
+        <h2 class="text-center text-danger">out of stock</h2>
         <td><input type="submit" name="addToCart" Value="Add To Cart" disabled></td>
     <?php } else { ?>
         <td><input type="submit" id="addToCart" name="addToCart" Value="Add To Cart"></td>

@@ -74,6 +74,7 @@ class Ced_subscribe extends WP_List_Table {
         $sortable = $this->get_sortable_columns();
         $this->_column_headers =array($columns, $hidden, $sortable);
         $this->items = $arr;
+        print_r($this->items);
 	}
 
     function column_default( $item, $column_name ) {

@@ -107,6 +107,7 @@ class Cedshop_Public {
 	 */
 	public function ced_display_all_cart_product() {
 		$message = "";
+		
 		if(isset($_POST['delete'])) {
 			$userid =  get_current_user_id();
 			$deleteId = $_POST['delete'];
@@ -116,6 +117,7 @@ class Cedshop_Public {
 					if($value['id'] == $deleteId) {
 						//echo $value['id'];
 						unset($_SESSION['cart'][$key]);
+						$message = "<p class='text-danger'>Product deleted Successfully<p>";
 					}
 				}
 				update_user_meta( $userid, 'cartdata', $_SESSION['cart']);
@@ -129,8 +131,9 @@ class Cedshop_Public {
 			if(!empty($_SESSION['cart'])) {
 				foreach ($_SESSION['cart'] as $key =>$value) {
 					if($value['id'] == $deleteId) {
-						echo $value['id'];
+						//echo $value['id'];
 						unset($_SESSION['cart'][$key]);
+						$message = "<p class='text-danger'>Product deleted Successfully<p>";
 					}
 				}
 				asort($_SESSION['cart']);
@@ -146,11 +149,17 @@ class Cedshop_Public {
 				foreach ($_SESSION['cart'] as $key =>$value) {
 					$Inventory = get_post_meta($value['id'], 'Inventory', 1 );
 					if($value['id'] == $editId) {
-						if($Inventory <= $_SESSION['cart'][$key]['qty']) {
+						if($Inventory < $_SESSION['cart'][$key]['qty']) {
 							$message = "More than ".$Inventory." product not available";
 							break;
 						}else  {
-							$_SESSION['cart'][$key]['qty'] = $qty;
+							if($Inventory >= $qty) {
+								$_SESSION['cart'][$key]['qty'] = $qty;
+								$message = "Quantity updated Successfully";
+							}
+							else {
+								$message = "More than ".$Inventory." product not available";
+							}
 						}
 					}
 				}
@@ -160,17 +169,25 @@ class Cedshop_Public {
 		if(isset($_POST['edit'])) {
 			$userid =  get_current_user_id();
 			$cart = get_user_meta($userid,'cartdata',true); 
-			$editId = $_POST['edit'];
-			$qty = $_POST['qty'.$editId.''];
+			$editId = sanitize_text_field($_POST['edit']);
+			$qty = sanitize_text_field($_POST['qty'.$editId.'']);
+			//echo $qty;
+			//unset($_SESSION['cart']);
 			if(!empty($_SESSION['cart'])) {
 				foreach ($_SESSION['cart'] as $key =>$value) {
 					if($value['id'] == $editId) {
 						$Inventory = get_post_meta($value['id'], 'Inventory', 1 );
-						if($Inventory <= $_SESSION['cart'][$key]['qty']) {
+						if($Inventory < $_SESSION['cart'][$key]['qty']) {
 							$message = "More than ".$Inventory." product not available";
 							break;
 						}else  {
-							$_SESSION['cart'][$key]['qty'] = $qty;
+							if($Inventory >= $qty) {
+								$_SESSION['cart'][$key]['qty'] = $qty;
+								$message = "Quantity updated Successfully";
+							}
+							else {
+								$message = "More than ".$Inventory." product not available";
+							}
 						}
 					}
 				}
@@ -183,7 +200,7 @@ class Cedshop_Public {
 			$id =  get_current_user_id();
 			$total = 0;
 			$cart = get_user_meta($id,'cartdata',true); ?>
-			<div class="success"><?php echo $message ; ?><div>
+			<div class="success"><?php echo $message ; ?></div>
 			<form method="post">
 				<table class="table">
 				<tr>
@@ -200,7 +217,7 @@ class Cedshop_Public {
 						?>
 						<tr><td class="image"><img src=<?php echo esc_url($v['src']);?>></td>
 						<td><?php echo esc_attr($v['title']); ?></td>
-						<td><input type="number" min="0" name="qty<?php echo esc_attr($v['id']);?>" value="<?php echo esc_attr($v['qty']); ?>" required></td>
+						<td><input type="number" min="1" name="qty<?php echo esc_attr($v['id']);?>" value="<?php echo esc_attr($v['qty']); ?>" required></td>
 						<td><?php echo esc_attr($v['price']); ?></td>
 						<td><?php echo  esc_attr($v['qty'])*esc_attr($v['price']); ?></td>
 						<td><button type="submit" name="delete" class="btn btn-danger" value="<?php echo esc_attr($v['id']);?>">Delete</button></td>
@@ -214,18 +231,20 @@ class Cedshop_Public {
 					foreach( $cart as $k=>$v ) {
 						$total = $total + $v['qty']*$v['price'];
 					}
-					echo 'Total Price ='.$total;
+					echo '<h4>Total Price = '.$total.'<h4>';
 				} 
 				?>
 				</br>
-				<button type="submit" name="checkout" class="btn btn-success">Checkout</button></td>
+				<?php if(!empty($cart)) { ?>
+					<button type="submit" name="checkout" formaction ="../checkout/" class="btn btn-success">Checkout</button></td>
+				<?php } ?>
 			</form>
 			<?php
 		}
 		else {
 			$total = 0;
 			//session_start(); ?>
-			<div class="success"><?php echo $message ; ?><div>
+			<div class="success"><?php echo $message ; ?></div>
 			<form method="post">
 			<table class="table">
 			<tr>
@@ -242,7 +261,7 @@ class Cedshop_Public {
 						?>
 						<tr><td class="image"><img src=<?php echo $value['src'];?>></td>
 						<td><?php echo $value['title']; ?></td>
-						<td><input type="number" min="0" name="qty<?php echo $value['id'];?>" value="<?php echo $value['qty']; ?>" required></td>
+						<td><input type="number" min="1" name="qty<?php echo $value['id'];?>" value="<?php echo $value['qty']; ?>" required></td>
 						<td><?php echo $value['price']; ?></td>
 						<td><?php echo $value['qty']*$value['price']; ?></td>
 						<td><button type="submit" name="deleteSessiondata" class="btn btn-danger" value="<?php echo $value['id'];?>">Delete</button></td>
@@ -251,14 +270,18 @@ class Cedshop_Public {
 				}
 				?>
 			</table>
-			</form>
-			<?php	
+			<?php 
 			if(!empty($_SESSION['cart'])) {
 				foreach ($_SESSION['cart'] as $key =>$value) {
 					$total = $total + $value['qty']*$value['price'];
 				}
 				echo 'Total Price ='.$total;
 			}
+			if(!empty($_SESSION['cart'])) { ?>
+					</br><button type="submit" name="checkout" formaction ="../checkout/" class="btn btn-success">Checkout</button></td>
+			<?php } ?>
+			</form>
+			<?php	
 		}
 	}	
 	
@@ -330,5 +353,33 @@ class Cedshop_Public {
 		else {
 			return $single;
 		}
+	}	
+
+	/**
+	 * This function is used for include checkout page
+	 * ced_include_ceckout_page
+	 *
+	 * @return void
+	 */
+	public function ced_include_ceckout_page($template) {
+		//echo get_query_var('pagename');
+		 if(get_query_var('pagename') == 'checkout' ) {
+			 //echo dirname( __FILE__ ) ;
+			 $file_name = 'checkout.php';
+			 $template = plugin_dir_path( __FILE__ ) . '/partials/' . $file_name;
+			 return $template;
+		 }
+		 return $template;
+	}
+	public function ced_include_order_page($template) {
+		//echo get_query_var('pagename');
+		if(get_query_var('pagename') == 'order' ) {
+			//echo dirname( __FILE__ ) ;
+			$file_name = 'order.php';
+			$template = plugin_dir_path( __FILE__ ) . '/partials/' . $file_name;
+			return $template;
+		}
+		return $template;
+
 	}
 }

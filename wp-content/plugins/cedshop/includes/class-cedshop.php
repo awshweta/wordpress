@@ -163,6 +163,7 @@ class Cedshop {
 		$this->loader->add_action( 'after_setup_theme', $plugin_admin , 'ced_theme_support' );
 		$this->loader->add_action( 'after_setup_theme', $plugin_admin , 'ced_theme_support' );
 		$this->loader->add_action( 'wp_logout', $plugin_admin ,'ced_user_logout' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin ,'ced_order_menu_page' );
 		
 	}
 
@@ -183,6 +184,8 @@ class Cedshop {
 		$this->loader->add_action( 'init', $plugin_public ,'ced_add_session_data_to_cart' );
 		add_shortcode( 'product', array($plugin_public , 'ced_display_all_product') );
 		add_shortcode( 'cart', array($plugin_public , 'ced_display_all_cart_product') );
+		$this->loader->add_action('template_include', $plugin_public , 'ced_include_ceckout_page');
+		$this->loader->add_action('template_include', $plugin_public , 'ced_include_order_page');
 		
 	}
 

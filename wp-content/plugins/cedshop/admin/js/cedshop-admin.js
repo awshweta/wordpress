@@ -1,19 +1,41 @@
 (function( $ ) {
 	'use strict';
+	
 	$(document).ready(function(){
 		$("#publish").click(function(e){
 			e.preventDefault();
-		 	var val = $('#discountedPrice').val();
-			 //alert(val);
-			val = parseInt(val);
-			var reg = $("#regularPrice").val();
-			//alert(reg);
-			reg = parseInt(reg);
-			if(val > reg) {
+		 	var discountedPrice = $('#discountedPrice').val();
+			 discountedPrice = parseInt(discountedPrice);
+			var regularPrice = $("#regularPrice").val();
+			regularPrice = parseInt(regularPrice);
+			var inventory = $('#inventory').val();
+			var bool = false;
+			if(inventory < 0) {
+				bool = true;
+				$('.inventoryErr').html("Inventory cannot be negative");
+				$('html, body').animate({
+					scrollTop: parseInt($("#inventory").offset().top)
+				}, 2000);
+				return false;
+			}
+			if(discountedPrice > regularPrice) {
 				$('.disErr').html("discount price must be less than regular price");
+				bool = true;
+				$('html, body').animate({
+					scrollTop: parseInt($("#discountedPrice").offset().top)
+				}, 2000);
 			}
 			else {
-				$("#post").submit();
+				if(discountedPrice < 0 || regularPrice < 0) {
+					$('.disErr').html("discount price and regular price can not be negative");
+					bool = true;
+					$('html, body').animate({
+						scrollTop: parseInt($("#discountedPrice").offset().top)
+					}, 2000);
+				}
+				else {
+					$("#post").submit();
+				}
 			}
 		});
 	  });
