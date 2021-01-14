@@ -38,10 +38,10 @@ class Display_order_table extends WP_List_Table {
                 $product = json_decode($value['product']);
                 if(!empty($product)) {
                     foreach($product as $prod_key=>$prod_value) {
-                        $prod_id .= "id = ".$prod_value->id." & title = ".$prod_value->title."</br>";
+                        $prod_id .= "id = ".esc_attr($prod_value->id)." & title = ".esc_attr($prod_value->title)."</br>";
                     }
                 }
-                $array[] = array('id'=>$value['id'],'customer_detail'=>$bill->name.", ".$bill->email.", ".$bill->mobile,'address'=>$bill->address.", ".$bill->city.", ".$bill->pincode,'amount'=>$value['amount'],'product'=>$prod_id,'payment_method'=>$value['payment_method'],'date'=>$value['date']);
+                $array[] = array('id'=>esc_attr($value['id']),'customer_detail'=>esc_attr($bill->name).", ".esc_attr($bill->email).", ".esc_attr($bill->mobile),'address'=>esc_attr($bill->address).", ".esc_attr($bill->city).", ".esc_attr($bill->pincode),'amount'=>esc_attr($value['amount']),'product'=>$prod_id,'payment_method'=>esc_attr($value['payment_method']),'date'=>esc_attr($value['date']));
             }
         }
         $this->items = $array;

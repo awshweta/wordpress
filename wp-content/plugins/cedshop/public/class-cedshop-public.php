@@ -364,7 +364,6 @@ class Cedshop_Public {
 	public function ced_include_ceckout_page($template) {
 		//echo get_query_var('pagename');
 		 if(get_query_var('pagename') == 'checkout' ) {
-			 //echo dirname( __FILE__ ) ;
 			 $file_name = 'checkout.php';
 			 $template = plugin_dir_path( __FILE__ ) . '/partials/' . $file_name;
 			 return $template;
@@ -372,9 +371,7 @@ class Cedshop_Public {
 		 return $template;
 	}
 	public function ced_include_order_page($template) {
-		//echo get_query_var('pagename');
 		if(get_query_var('pagename') == 'order' ) {
-			//echo dirname( __FILE__ ) ;
 			$file_name = 'order.php';
 			$template = plugin_dir_path( __FILE__ ) . '/partials/' . $file_name;
 			return $template;

@@ -108,11 +108,11 @@ get_header();
 				if(!empty($_SESSION['cart'])) {
 					foreach ($_SESSION['cart'] as $key =>$value) {
 						?>
-						<tr><td class="image"><img src=<?php echo $value['src'];?>></td>
-						<td><?php echo $value['title']; ?></td>
-						<td><?php echo $value['qty'];?></td>
-						<td><?php echo $value['price']; ?></td>
-						<td><?php echo $value['qty']*$value['price']; ?></td>
+						<tr><td class="image"><img src=<?php echo esc_url($value['src']);?>></td>
+						<td><?php echo esc_attr($value['title']); ?></td>
+						<td><?php echo esc_attr($value['qty']);?></td>
+						<td><?php echo esc_attr($value['price']); ?></td>
+						<td><?php echo esc_attr($value['qty'])*esc_attr($value['price']); ?></td>
 					<?php }
 				}
 				?>

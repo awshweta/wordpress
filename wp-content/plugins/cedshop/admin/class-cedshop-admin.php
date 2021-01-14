@@ -145,7 +145,7 @@ class Cedshop_Admin extends WP_List_Table {
 	public function ced_metabox_form(  ) {
 		?>
 		<label for="wporg_field">Inventory</label>
-			<input type="number" min="0" name="inventory" id="inventory" value="<?php echo get_post_meta(get_the_ID(),"Inventory",1);?>" required>
+			<input type="number" min="0" name="inventory" id="inventory" value="<?php echo esc_attr(get_post_meta(get_the_ID(),"Inventory",1));?>" required>
 			<small class="inventoryErr"></small>
 		<?php
 	}
@@ -183,14 +183,14 @@ class Cedshop_Admin extends WP_List_Table {
 				update_post_meta(
 					$post_id,
 					'Inventory',
-					$_POST['inventory']
+					sanitize_text_field( $_POST['inventory'])
 				);
 			}
 			if ( array_key_exists( 'regularPrice', $_POST ) ) {
 				update_post_meta(
 					$post_id,
 					'Price',
-					$_POST['regularPrice']
+					sanitize_text_field( $_POST['regularPrice'])
 				);
 			}
 			if ( array_key_exists( 'discountedPrice', $_POST ) ) {
@@ -198,7 +198,7 @@ class Cedshop_Admin extends WP_List_Table {
 					update_post_meta(
 						$post_id,
 						'discountPrice',
-						$_POST['discountedPrice']
+						sanitize_text_field( $_POST['discountedPrice'])
 					);
 				}
 			}
@@ -214,9 +214,9 @@ class Cedshop_Admin extends WP_List_Table {
 		?>
 		<div  class="discount">
 			<label for="wporg_field">Regular Price</label>
-			<input type="number" min="0"  name="regularPrice" id="regularPrice" value="<?php echo get_post_meta(get_the_ID(),"Price",1);?>" required></br>
+			<input type="number" min="0"  name="regularPrice" id="regularPrice" value="<?php echo esc_attr(get_post_meta(get_the_ID(),"Price",1));?>" required></br>
 			<label for="wporg_field">Discounted Price</label>
-			<input type="number" min="0"  name="discountedPrice" id="discountedPrice" value="<?php echo get_post_meta(get_the_ID(),"discountPrice",1);?>">
+			<input type="number" min="0"  name="discountedPrice" id="discountedPrice" value="<?php echo esc_attr(get_post_meta(get_the_ID(),"discountPrice",1));?>">
 			<p class="disErr"></p>
 		</div>
 		<?php
