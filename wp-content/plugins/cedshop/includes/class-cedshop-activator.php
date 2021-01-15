@@ -31,7 +31,7 @@ class Cedshop_Activator {
 	 */
 	public static function activate() {
 		global $wpdb;
-		if(!get_page_by_title('Shop')) {
+		if (!get_page_by_title('Shop')) {
 			$shop = array(
 				'post_title'    => 'Shop' ,
 				'post_content'  => '[product]',
@@ -43,7 +43,7 @@ class Cedshop_Activator {
 			wp_insert_post( $shop );
 		}
 		
-		if(!get_page_by_title('Cart')) {
+		if (!get_page_by_title('Cart')) {
 			$cart = array(
 				'post_title'    => 'Cart' ,
 				'post_content'  => '[cart]',
@@ -54,7 +54,7 @@ class Cedshop_Activator {
 			wp_insert_post( $cart );
 		}
 
-		if(!get_page_by_title('checkout')) {
+		if (!get_page_by_title('checkout')) {
 			$checkout = array(
 				'post_title'    => 'checkout' ,
 				'post_content'  => '',
@@ -65,7 +65,7 @@ class Cedshop_Activator {
 			wp_insert_post( $checkout );
 		}
 
-		if(!get_page_by_title('order')) {
+		if (!get_page_by_title('order')) {
 			$order = array(
 				'post_title'    => 'order' ,
 				'post_content'  => '',
@@ -92,7 +92,7 @@ class Cedshop_Activator {
 			PRIMARY KEY  (id)
 		) $charset_collate;";
 
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		require_once  ABSPATH . 'wp-admin/includes/upgrade.php' ;
 		dbDelta( $sql );
 	}
 }

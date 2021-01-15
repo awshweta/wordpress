@@ -4,41 +4,45 @@
 	$(document).ready(function(){
 		$("#publish").click(function(e){
 			e.preventDefault();
-		 	var discountedPrice = $('#discountedPrice').val();
-			 discountedPrice = parseInt(discountedPrice);
-			var regularPrice = $("#regularPrice").val();
-			regularPrice = parseInt(regularPrice);
-			var inventory = $('#inventory').val();
+			var discountedPrice = $('#discountedPrice').val();
+			var regularPrice    = $("#regularPrice").val();
+			var inventory       = $('#inventory').val();
+			//inventory = parseInt(inventory);
+			//alert(inventory);
 			var bool = false;
-			if(inventory < 0) {
+			
+			if (inventory < 0 || inventory == "" ) {
 				bool = true;
-				$('.inventoryErr').html("Inventory cannot be negative");
+				$('.inventoryErr').html("All field are required and Inventory cannot be negative");
 				$('html, body').animate({
 					scrollTop: parseInt($("#inventory").offset().top)
 				}, 2000);
-				return false;
+				//return false;
 			}
-			if(discountedPrice > regularPrice) {
-				$('.disErr').html("discount price must be less than regular price");
+			if (discountedPrice < 0 || regularPrice < 0 || regularPrice == "" ) {
 				bool = true;
+				$('.disErr').html("All field are required and discount price and regular price can not be negative");
 				$('html, body').animate({
 					scrollTop: parseInt($("#discountedPrice").offset().top)
 				}, 2000);
-			}
-			else {
-				if(discountedPrice < 0 || regularPrice < 0) {
-					$('.disErr').html("discount price and regular price can not be negative");
+				//return false;
+			} else {
+				discountedPrice = parseInt(discountedPrice);
+				regularPrice    = parseInt(regularPrice);
+				if (discountedPrice > regularPrice) {
+					$('.disErr').html("discount price must be less than regular price");
 					bool = true;
 					$('html, body').animate({
 						scrollTop: parseInt($("#discountedPrice").offset().top)
 					}, 2000);
-				}
-				else {
-					$("#post").submit();
+					//return false;
 				}
 			}
+			if (bool == false) {
+				$("#post").submit();
+			}
 		});
-	  });
+	});
 
 	/**
 	 * All of the code for your admin-facing JavaScript source

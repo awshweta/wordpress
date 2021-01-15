@@ -1,6 +1,6 @@
 <?php
 if ( ! class_exists( 'WP_List_Table' ) ) {
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+	require_once  ABSPATH . 'wp-admin/includes/class-wp-list-table.php' ;
 }
 /**
  * The admin-specific functionality of the plugin.
@@ -42,6 +42,7 @@ class Cedshop_Admin extends WP_List_Table {
 	 */
 	private $version;
 	public $discountErr;
+	public $inventoryErr;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -53,7 +54,7 @@ class Cedshop_Admin extends WP_List_Table {
 	public function __construct( $plugin_name, $version ) {
 
 		$this->plugin_name = $plugin_name;
-		$this->version = $version;
+		$this->version     = $version;
 
 	}
 
@@ -132,21 +133,20 @@ class Cedshop_Admin extends WP_List_Table {
 			'has_archive'         => true,
 		
 		);
-		register_post_type( "Products", $args );
+		register_post_type( 'Products', $args );
 	}
 
 	/**
 	 * create Custom meta box (8-1-2021)
 	 * ced_metabox_form
 	 *
-	 * 
 	 * @return void
 	 */
-	public function ced_metabox_form(  ) {
+	public function ced_metabox_form() {
 		?>
 		<label for="wporg_field">Inventory</label>
-			<input type="number" min="0" name="inventory" id="inventory" value="<?php echo esc_attr(get_post_meta(get_the_ID(),"Inventory",1));?>" required>
-			<small class="inventoryErr"></small>
+			<input type="number" min="0" name="inventory" id="inventory" value="<?php echo esc_attr(get_post_meta(get_the_ID(), 'Inventory', 1)); ?>" required>
+			<small class="inventoryErr"><?php echo $this->inventoryErr; ?></small>
 		<?php
 	}
 
@@ -156,7 +156,7 @@ class Cedshop_Admin extends WP_List_Table {
 	 * @return void
 	 */
 	public function ced_metabox() {
-		$screen = "Products";
+		$screen = 'Products';
 		add_meta_box(
 			'Inventory',              // Unique ID
 			'Inventory',      // Box title
@@ -179,22 +179,29 @@ class Cedshop_Admin extends WP_List_Table {
 	 * @return void
 	 */
 	public function save_metabox_data( $post_id ) {
-			if ( array_key_exists( 'inventory', $_POST ) ) {
+		$check = false;
+		if ( array_key_exists( 'inventory', $_POST ) && array_key_exists( 'regularPrice', $_POST ) && array_key_exists( 'discountedPrice', $_POST )) {
+			if ($_POST['inventory'] == '' || $_POST['regularPrice'] == '' || $_POST['regularPrice'] < 0 || $_POST['discountedPrice'] < 0 ||$_POST['inventory'] < 0 ) {
+				$check              = true;
+				$this->inventoryErr = 'All field are required and Inventory can not be Negative';
+				wp_die('All field are required & Inventory ,discount price and regular price can not be Negative');
+			}
+			if ( $_POST['regularPrice'] < $_POST['discountedPrice'] ) {
+				$check = true;
+				wp_die('Discount price must be less than inventory price');
+			}
+			if ($check == false) {
 				update_post_meta(
 					$post_id,
 					'Inventory',
 					sanitize_text_field( $_POST['inventory'])
 				);
-			}
-			if ( array_key_exists( 'regularPrice', $_POST ) ) {
 				update_post_meta(
 					$post_id,
 					'Price',
 					sanitize_text_field( $_POST['regularPrice'])
 				);
-			}
-			if ( array_key_exists( 'discountedPrice', $_POST ) ) {
-				if($_POST['regularPrice'] > $_POST['discountedPrice']) {
+				if ($_POST['regularPrice'] > $_POST['discountedPrice']) {
 					update_post_meta(
 						$post_id,
 						'discountPrice',
@@ -202,21 +209,21 @@ class Cedshop_Admin extends WP_List_Table {
 					);
 				}
 			}
+		}
 	}
 
 	/**
 	 * ced_metabox_priceform
 	 *
-	 * 
 	 * @return void
 	 */
-	public function ced_metabox_priceform( ) {
+	public function ced_metabox_priceform() {
 		?>
 		<div  class="discount">
 			<label for="wporg_field">Regular Price</label>
-			<input type="number" min="0"  name="regularPrice" id="regularPrice" value="<?php echo esc_attr(get_post_meta(get_the_ID(),"Price",1));?>" required></br>
+			<input type="number" min="0"  name="regularPrice" id="regularPrice" value="<?php echo esc_attr(get_post_meta(get_the_ID(), 'Price', 1)); ?>" required></br>
 			<label for="wporg_field">Discounted Price</label>
-			<input type="number" min="0"  name="discountedPrice" id="discountedPrice" value="<?php echo esc_attr(get_post_meta(get_the_ID(),"discountPrice",1));?>">
+			<input type="number" min="0"  name="discountedPrice" id="discountedPrice" value="<?php echo esc_attr(get_post_meta(get_the_ID(), 'discountPrice', 1)); ?>">
 			<p class="disErr"></p>
 		</div>
 		<?php
@@ -250,15 +257,15 @@ class Cedshop_Admin extends WP_List_Table {
 			'rewrite'           => [ 'slug' => 'Category' ],
 		);
 		register_taxonomy( 'cat', ['products' ], $args );
-   }
+	}
    
    /**
 	* This function is used for support feature image
-    * ced_theme_support
-    *
-    * @return void
-    */
-   public function ced_theme_support() {
+	* ced_theme_support
+	*
+	* @return void
+	*/
+	public function ced_theme_support() {
 
 		// Custom background color.
 		add_theme_support(
@@ -340,11 +347,11 @@ class Cedshop_Admin extends WP_List_Table {
 	 * @return void
 	 */
 	public function ced_display_order() {
-		echo "<h1>".esc_html( get_admin_page_title() )."</h1>";
-		require_once("partials/Display_order_table.php");
-        $order = new Display_order_table();
-        $order->prepare_items();
-        $order->display();
+		echo '<h1>' . esc_html( get_admin_page_title() ) . '</h1>';
+		require_once 'partials/Display_order_table.php';
+		$order = new Display_order_table();
+		$order->prepare_items();
+		$order->display();
 	}
 	
 	/**
